@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="es-mx">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+	<meta name="generator" content="Hugo 0.84.0">
+	<title>Demetria Album</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css"/>
+	<style>
+    .card-body {
+    padding-bottom: 0.5rem;
+    }
+    .bd-example {
+    position: relative;
+    /*padding: 1rem;
+    margin: 1rem -.75rem 0;*/
+    border: solid #dee2e6;
+    border-width: 1px 0 0;
+    }
+    @media (min-width: 576px) {
+    .bd-example {
+    /*padding: 1.5rem;*/
+    margin-right: 0;
+    margin-left: 0;
+    border-width: 1px;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+    }
+    }
+    .note-margin {
+    margin: 5px 10px;
+    }
+	</style>
+</head>
+<body>
+<header>
+	<div class="collapse bg-dark" id="navbarHeader">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-4 offset-md-8 py-4 text-right text-end">
+					<h4 class="text-white">Opciones avanzadas</h4>
+					<ul class="list-unstyled">
+						<li><a href="add-collection.html" class="text-white">Agregar colección</a></li>
+						<li><a href="add-model.html" class="text-white">Agregar modelo</a></li>
+                        <li><a href="add-category.html" class="text-white">Agregar categoría</a></li>
+						<li><a href="add-group.html" class="text-white">Agregar grupo de fotos</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="navbar navbar-dark bg-dark shadow-sm">
+		<div class="container">
+			<a href="index.html" class="navbar-brand d-flex align-items-center">
+				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" class="me-2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+				<strong>Album</strong>
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+		</div>
+	</div>
+</header>
+<main>
+	<div class="album py-5 bg-light">
+		<div class="container">
+			<div class="row">
+                <div class="col-md-8 col-12">
+                    <div class="row mt-2" id="photos">
+                        
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="mb-3">
+                        <h5>Colección</h5>
+                        <p id="collection"></p>
+                        <h5>Modelo</h5>
+                        <p id="model"></p>
+                    </div>
+                    <!--
+                    <div class="row">
+                        <div class="d-grid gap-2 d-md-block">
+                            <button class="btn btn-sm btn-primary" type="button" onclick="add_group();" id="btn-save-group">Editar grupo</button>
+                          </div>
+                    </div>
+                    -->
+                    <h5 class="text-center">Notas</h5>
+                    <div id="notes" class="mb-3">
+                    </div>
+                    <form action="javascript:void();" id="form-note">
+                        <div id="products">
+                            <div class="form-floating">
+                                <select class="form-select" id="product" name="product" onchange="change_product(this.value);"></select>
+                                <label for="product">Producto</label>
+                              </div>
+                            <div class="form-floating mt-2 mb-2">
+                                <input type="text" class="form-control" name="barcode" id="barcode" placeholder="Escribe el código">
+                                <label for="barcode">Código</label>
+                              </div>
+                            <div class="form-floating">
+                                <textarea class="form-control" name="note" id="note" placeholder="Escribe la nota"></textarea>
+                                <label for="note">Nota</label>
+                            </div>
+                            <div class="mt-2">
+                                <button class="btn btn-success mb-3" type="button" onclick="add_note();" id="btn-save-note">Publicar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+			</div>
+		</div>
+	</div>
+</main>
+<footer class="text-muted py-5">
+<div class="container">
+<p class="text-center mb-1">
+<a href="#">Regresar arriba</a>
+</p>
+</div>
+</footer>
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
+<script src="js/photos.js"></script>
+<script>
+    load_view();
+</script>
+</body>
+</html>
