@@ -271,12 +271,12 @@ function index() {
                 if (response.data.before == "off") {
                     before = `<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a></li>`;
                 } else {
-                    before = `<li class="page-item"><a class="page-link" href="search?limit=${response.data.before_count}">Anterior</a></li>`;
+                    before = `<li class="page-item"><a class="page-link" href="search.html?limit=${response.data.before_count}">Anterior</a></li>`;
                 }
                 if (response.data.after == "off") {
                     after = `<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Siguiente</a></li>`;
                 } else {
-                    after = `<li class="page-item"><a class="page-link" href="search?limit=${response.data.after_count}" aria-disabled="true">Siguiente</a></li>`;
+                    after = `<li class="page-item"><a class="page-link" href="search.html?limit=${response.data.after_count}" aria-disabled="true">Siguiente</a></li>`;
                 }
                 html += `
                 <div class="col-12">
@@ -360,12 +360,12 @@ function search() {
                 if (response.data.before == "off") {
                     before = `<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a></li>`;
                 } else {
-                    before = `<li class="page-item"><a class="page-link" href="search?limit=${response.data.before_count}">Anterior</a></li>`;
+                    before = `<li class="page-item"><a class="page-link" href="search.html?limit=${response.data.before_count}">Anterior</a></li>`;
                 }
                 if (response.data.after == "off") {
                     after = `<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Siguiente</a></li>`;
                 } else {
-                    after = `<li class="page-item"><a class="page-link" href="search?limit=${response.data.after_count}" aria-disabled="true">Siguiente</a></li>`;
+                    after = `<li class="page-item"><a class="page-link" href="search.html?limit=${response.data.after_count}" aria-disabled="true">Siguiente</a></li>`;
                 }
                 html += `
                 <div class="col-12">
@@ -499,4 +499,73 @@ function checkSession() {
     if ( localStorage.getItem("jwt") == undefined) {
         window.location.href = "login.html";
     }
+}
+
+function search_group_table() {
+    var limit = getParameterByName("limit");
+    var formElement = document.getElementById("form-search");
+    var formdata = new FormData(formElement);
+    formdata.append("jwt", localStorage.getItem("jwt"));
+    formdata.append("limit", limit);
+    axios.post("modules/group/search_group_table.php", formdata, {headers: { "Content-Type": "multipart/form-data" },}).then((response) => {
+        switch (response.data.status) {
+            case "ok":
+                var html = "";
+                var name_product = "";
+                var barcode_product = "";
+                //console.log(response.data.results);
+                var results = response.data.results;
+                const keysSorted = Object.keys(results).sort(function(a,b){return b-a});
+                for (let key = 0; key < keysSorted.length; key++) {
+                    html += `
+                    <tr>
+                        <th scope="row">
+                            <a data-fancybox="gallery" data-src="${results[keysSorted[key]].url}" data-caption="${results[keysSorted[key]].original_filename}">
+                                <img src="${results[keysSorted[key]].url}" class="card-img-top img-thumbnail rounded img-fluid" style="max-width: 64px; min-height: 64px;">
+                            </a>
+                        </th>
+                        <td>${results[keysSorted[key]].collection}</td>
+                        <td>${results[keysSorted[key]].model}</td>
+                        <td>${results[keysSorted[key]].products}</td>
+                        <td>
+                            <button class="btn btn-primary" type="button"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="btn btn-danger" type="button"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+
+                }
+                var before = "";
+                var after = "";
+                if (response.data.before == "off") {
+                    before = `<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a></li>`;
+                } else {
+                    before = `<li class="page-item"><a class="page-link" href="search.html?limit=${response.data.before_count}">Anterior</a></li>`;
+                }
+                if (response.data.after == "off") {
+                    after = `<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Siguiente</a></li>`;
+                } else {
+                    after = `<li class="page-item"><a class="page-link" href="search.html?limit=${response.data.after_count}" aria-disabled="true">Siguiente</a></li>`;
+                }
+                html += `
+                <div class="col-12">
+                <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    ${before}
+                    ${after}
+                </ul>
+                </nav>
+               </div> `;
+                $("#results-search").html(html);
+                break;
+            case "error":
+                alert(response.data.answer);
+                break;
+        }
+    },(error) => {
+        console.log(error);
+    });
+}
+
+function change_image_order() {
+    
 }

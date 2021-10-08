@@ -55,14 +55,27 @@ for ($i=0; $i < 4; $i++) {
         }
     }
 }
+$models = array();
+$query = 'SELECT * FROM `model`';
+$result = mysqli_query($connection, $query);
+while ($row = mysqli_fetch_assoc($result)) {
+    $models[$row['id_model']] = $row['name'];
+}
+$collections = array();
+$query = 'SELECT * FROM `collection`';
+$result = mysqli_query($connection, $query);
+while ($row = mysqli_fetch_assoc($result)) {
+    $collections[$row['id_collection']] = $row['name'];
+}
 $where .= " GROUP BY `group_photo`.`id_group` ORDER BY `group_photo`.`id_group` DESC";
 $query = "SELECT `product`.`id_product`, `product`.`id_group`, `group_photo`.`id_collection`, `group_photo`.`id_model`, `product`.`id_category`, `photo`.`id_photo`, `product`.`name`, `product`.`barcode`, `photo`.`asset_id`, `photo`.`original_filename`, `photo`.`url` FROM `product` INNER JOIN `photo` ON `product`.`id_group` = `photo`.`id_group` INNER JOIN `group_photo` ON `product`.`id_group` = `group_photo`.`id_group`".$where.$limit;
-$response['query'][] = $query;
 $result = mysqli_query($connection, $query);
 $response['results'] = array();
 while ($row = mysqli_fetch_assoc($result)) {
     if (!isset($response["results"][$row["id_group"]])) {
-        $response["results"][$row["id_group"]] = array("id_group" => $row["id_group"], "url" => $row["url"]);
+        $query = 'SELECT COUNT(id_product) AS `products` FROM `product` WHERE id_group = '.$row['id_group'];
+        $row_p = mysqli_fetch_assoc(mysqli_query($connection, $query));
+        $response["results"][$row["id_group"]] = array("id_group" => $row["id_group"], "url" => $row["url"], 'original_filename' => $row['original_filename'], 'products' => $row_p['products'], 'model' => $models[$row['id_model']], 'collection' => $collections[$row['id_collection']]);
     }
 }
 if ($limit_val > 24) {
@@ -74,7 +87,6 @@ if ($limit_val > 24) {
 $response["after_count"] = intval($limit_val/24) + 1;
 $limit = "LIMIT $limit_val,24";
 $query = "SELECT `product`.`id_product`, `product`.`id_group`, `group_photo`.`id_collection`, `group_photo`.`id_model`, `product`.`id_category`, `photo`.`id_photo`, `product`.`name`, `product`.`barcode`, `photo`.`asset_id`, `photo`.`original_filename`, `photo`.`url` FROM `product` INNER JOIN `photo` ON `product`.`id_group` = `photo`.`id_group` INNER JOIN `group_photo` ON `product`.`id_group` = `group_photo`.`id_group`".$where." $limit";
-$response['query'][] = $query;
 $result = mysqli_query($connection,$query);
 $rows = mysqli_num_rows($result);
 if ($rows > 0) {

@@ -14,6 +14,7 @@
 			padding-bottom: 0.5rem;
 		}
 	</style>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/
 </head>
 <body>
 <header>
@@ -119,7 +120,6 @@
     models();
     collections();
     categories();
-
     document.getElementById("upload_widget_opener").addEventListener("click", function() {
         cloudinary.openUploadWidget({ cloud_name: 'demetria', upload_preset: 'uwdq2xl3'}, 
         function(error, result) {

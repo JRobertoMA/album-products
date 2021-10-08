@@ -25,10 +25,10 @@ if ($limit == "" || $limit == "1" || $limit == "0") {
     $limit_val = $limit_val*24;
     $limit = " LIMIT $limit,24";
 }
-if ($collecion == "") {
+if ($collection == "") {
     $wheres[] = "";
 } else {
-    $wheres[] = "`id_collection` = '$collecion'";
+    $wheres[] = "`id_collection` = '$collection'";
 }
 if ($model == "") {
     $wheres[] = "";
@@ -59,8 +59,9 @@ $where .= " GROUP BY `group_photo`.`id_group` ORDER BY `group_photo`.`id_group` 
 $query = "SELECT `product`.`id_product`, `product`.`id_group`, `group_photo`.`id_collection`, `group_photo`.`id_model`, `product`.`id_category`, `photo`.`id_photo`, `product`.`name`, `product`.`barcode`, `photo`.`asset_id`, `photo`.`original_filename`, `photo`.`url` FROM `product` INNER JOIN `photo` ON `product`.`id_group` = `photo`.`id_group` INNER JOIN `group_photo` ON `product`.`id_group` = `group_photo`.`id_group`".$where.$limit;
 $response['query'][] = $query;
 $result = mysqli_query($connection, $query);
+$response['results'] = array();
 while ($row = mysqli_fetch_assoc($result)) {
-    if (is_null($response["results"][$row["id_group"]])) {
+    if (!isset($response["results"][$row["id_group"]])) {
         $response["results"][$row["id_group"]] = array("id_group" => $row["id_group"], "url" => $row["url"]);
     }
 }
