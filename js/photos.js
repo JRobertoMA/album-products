@@ -501,12 +501,13 @@ function checkSession() {
     }
 }
 
-function search_group_table() {
-    var limit = getParameterByName("limit");
+pag_product = 1;
+function search_group_table(change_page) {
+    pag_product += change_page;
     var formElement = document.getElementById("form-search");
     var formdata = new FormData(formElement);
     formdata.append("jwt", localStorage.getItem("jwt"));
-    formdata.append("limit", limit);
+    formdata.append("pag", pag_product);
     axios.post("modules/group/search_group_table.php", formdata, {headers: { "Content-Type": "multipart/form-data" },}).then((response) => {
         switch (response.data.status) {
             case "ok":
@@ -521,32 +522,33 @@ function search_group_table() {
                     <tr>
                         <th scope="row">
                             <a data-fancybox="gallery" data-src="${results[keysSorted[key]].url}" data-caption="${results[keysSorted[key]].original_filename}">
-                                <img src="${results[keysSorted[key]].url}" class="card-img-top img-thumbnail rounded img-fluid" style="max-width: 64px; min-height: 64px;">
+                                <img src="${results[keysSorted[key]].url}" class="card-img-top img-thumbnail rounded img-fluid" style="max-width: 64px;">
                             </a>
                         </th>
                         <td>${results[keysSorted[key]].collection}</td>
                         <td>${results[keysSorted[key]].model}</td>
                         <td>${results[keysSorted[key]].products}</td>
                         <td>
-                            <button class="btn btn-primary" type="button"><i class="fas fa-pencil-alt"></i></button>
+                            <a class="btn btn-primary" href="edit.html?group=${results[keysSorted[key]].id_group}"><i class="fas fa-pencil-alt"></i></a>
                             <button class="btn btn-danger" type="button"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>`;
 
                 }
+                $("#results-search").html(html);
                 var before = "";
                 var after = "";
                 if (response.data.before == "off") {
-                    before = `<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a></li>`;
+                    before = `<li class="page-item disabled"><button class="page-link" tabindex="-1" aria-disabled="true">Anterior</button></li>`;
                 } else {
-                    before = `<li class="page-item"><a class="page-link" href="search.html?limit=${response.data.before_count}">Anterior</a></li>`;
+                    before = `<li class="page-item"><button class="page-link" onclick="search_group_table(-1);">Anterior</button></li>`;
                 }
                 if (response.data.after == "off") {
-                    after = `<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Siguiente</a></li>`;
+                    after = `<li class="page-item disabled"><button class="page-link" tabindex="-1" aria-disabled="true">Siguiente</button></li>`;
                 } else {
-                    after = `<li class="page-item"><a class="page-link" href="search.html?limit=${response.data.after_count}" aria-disabled="true">Siguiente</a></li>`;
+                    after = `<li class="page-item"><button class="page-link" onclick="search_group_table(1);" aria-disabled="true">Siguiente</button></li>`;
                 }
-                html += `
+                html = `
                 <div class="col-12">
                 <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
@@ -555,7 +557,7 @@ function search_group_table() {
                 </ul>
                 </nav>
                </div> `;
-                $("#results-search").html(html);
+               $("#pages-search").html(html);
                 break;
             case "error":
                 alert(response.data.answer);
@@ -566,6 +568,117 @@ function search_group_table() {
     });
 }
 
+function load_edit() {
+    contador--;
+    var group = getParameterByName("group");
+    var formdata = new FormData();
+    formdata.append("jwt", localStorage.getItem("jwt"));
+    formdata.append("group", group);
+    axios.post("modules/group/edit_group.php", formdata, {headers: { "Content-Type": "multipart/form-data" },}).then((response) => {
+        switch (response.data.status) {
+            case "ok":
+                $("#collection").val(response.data.collection);
+                $(`#id_group`).val(response.data.id_group);
+                html = "";
+                for (const key in response.data.photo) {
+                    html += `<div class="col-md-4 col-6 mb-2" id="${response.data.photo[key].asset_id}">
+                                <a data-fancybox="gallery" data-src="${response.data.photo[key].url}" data-caption="${response.data.photo[key].original_filename}">
+                                    <img src="${response.data.photo[key].url}" class="card-img-top img-thumbnail rounded img-fluid"/>
+                                </a>
+                            </div>`;
+                }
+                $("#photos").html(html);
+                html = "";
+                for (const key in response.data.product) {
+                    var html = `
+                    <div id="product-${contador}" class="mb-1">
+                        <input type="hidden" name="id_product[]" id="id-product-${contador}" value="${response.data.product[key].id_product}">
+                        <div class="mb-3">
+                            <label for="name-product-${contador}" class="form-label">Nombre</label>
+                            <input type="text" name="name_product[]" id="name-product-${contador}" class="form-control" value="${response.data.product[key].name}">
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="code-product-${contador}" class="form-label">Codigo</label>
+                                <input type="text" name="code_product[]" id="code-product-${contador}" class="form-control" value="${response.data.product[key].barcode}">
+                            </div>
+                            <div class="col-6">
+                                <label for="category-product-${contador}" class="form-label">Categoría</label>
+                                <select name="category_product[]" id="category-product-${contador}" class="form-control">
+                                    ${html_categories}
+                                </select>
+                            </div>
+                        </div>`;
+                    if (contador == 1) {
+                        html += `</div>`;
+                    } else {
+                        html += `<button type="button" class="btn btn-danger btn-sm mt-1" onclick="remove_product(${contador});">Quitar</button>
+                        </div>`;
+                    }
+                    combinationHtml = document.getElementById("products");
+                    totalCombination = combinationHtml.childElementCount;
+                    if (totalCombination == 0) {
+                        document.getElementById("products").innerHTML = html;
+                    } else {
+                        ultimateCombination = combinationHtml.lastElementChild;
+                        ultimateID = ultimateCombination.id;
+                        $(html).insertAfter(`#${ultimateID}`);
+                    }
+                    $(`#category-product-${contador}`).val(response.data.product[key].id_category);
+                    contador++;
+                }
+                html = "";
+                for (const key in response.data.note) {
+                    html += `<div class="col-md-4 col-12">
+                                <div class="card">
+                                    <div class="card-header">${response.data.note[key].name_user}</div>
+                                    <div class="card-body">
+                                    <blockquote class="blockquote mb-0">
+                                        <p>${response.data.note[key].note}</p>
+                                        <footer class="blockquote-footer fs-6">${response.data.note[key].name} <cite title="${response.data.note[key].barcode}">${response.data.note[key].barcode}</cite><h6 class="text-center">${response.data.note[key].date_add}</h6></footer>
+                                    </blockquote>
+                                    </div>
+                                </div>
+                            </div>`;
+                }
+                $("#notes").html(html);
+                $("#model").val(response.data.model);
+                $("#btn-save-group").attr("onclick", "update_group();");
+                $("#upload_widget_opener").prop("disabled", false);
+                break;
+            case "error":
+                alert(response.data.answer);
+                window.location.href = "index.html";
+                break;
+        }
+    },(error) => {
+        console.log(error);
+    });
+}
+
+
 function change_image_order() {
-    
+    var photos = document.getElementById('photos').childNodes;
+    var photos_id = '';
+    for (let index = 0; index < photos.length; index++) {
+        if (photos_id == '') {
+            photos_id = photos[index].id;
+        } else {
+            photos_id += ','+photos[index].id;
+        }
+    }
+    var formdata = new FormData();
+    formdata.append("jwt", localStorage.getItem("jwt"));
+    formdata.append("photos", photos_id);
+    axios.post("modules/photo/change_image_order.php", formdata, {headers: { "Content-Type": "multipart/form-data" },}).then((response) => {
+        switch (response.data.status) {
+            case "ok":
+                break;
+            case "error":
+                alert(response.data.answer);
+                break;
+        }
+    },(error) => {
+        console.log(error);
+    });
 }

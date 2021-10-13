@@ -12,17 +12,16 @@ $collection = $_POST["collection"];
 $model = $_POST["model"];
 $category = $_POST["category"];
 $search = $_POST["search"];
-$limit = $_POST["limit"];
+$limit = $_POST['pag'];
 $search_token = array("collection" => $collection, "model" => $model, "category" => $category, "search" => $search);
 $response["search"] = $webToken->encode($search_token, "");
-if ($limit == "" || $limit == "1" || $limit == "0") {
+if ($limit == "" || $limit == "1") {
     $limit = " LIMIT 24";
     $limit_val = 24;
 } else {
-    $limit_val = intval($limit);
     $limit = intval($limit) - 1;
     $limit = $limit * 24;
-    $limit_val = $limit_val*24;
+    $limit_val = $limit + 1;
     $limit = " LIMIT $limit,24";
 }
 if ($collection == "") {
@@ -67,8 +66,9 @@ $result = mysqli_query($connection, $query);
 while ($row = mysqli_fetch_assoc($result)) {
     $collections[$row['id_collection']] = $row['name'];
 }
-$where .= " GROUP BY `group_photo`.`id_group` ORDER BY `group_photo`.`id_group` DESC";
+$where .= " AND `photo`.`order_priority` = 1 GROUP BY `group_photo`.`id_group` ORDER BY `group_photo`.`id_group` DESC";
 $query = "SELECT `product`.`id_product`, `product`.`id_group`, `group_photo`.`id_collection`, `group_photo`.`id_model`, `product`.`id_category`, `photo`.`id_photo`, `product`.`name`, `product`.`barcode`, `photo`.`asset_id`, `photo`.`original_filename`, `photo`.`url` FROM `product` INNER JOIN `photo` ON `product`.`id_group` = `photo`.`id_group` INNER JOIN `group_photo` ON `product`.`id_group` = `group_photo`.`id_group`".$where.$limit;
+$response['query'] = $query;
 $result = mysqli_query($connection, $query);
 $response['results'] = array();
 while ($row = mysqli_fetch_assoc($result)) {
@@ -79,14 +79,13 @@ while ($row = mysqli_fetch_assoc($result)) {
     }
 }
 if ($limit_val > 24) {
+    $limit = $limit_val+24;
     $response["before"] = "on";
-    $response["before_count"] = intval((($limit_val-1)/24));
 } else {
+    $limit = $limit_val;
     $response["before"] = "off";
 }
-$response["after_count"] = intval($limit_val/24) + 1;
-$limit = "LIMIT $limit_val,24";
-$query = "SELECT `product`.`id_product`, `product`.`id_group`, `group_photo`.`id_collection`, `group_photo`.`id_model`, `product`.`id_category`, `photo`.`id_photo`, `product`.`name`, `product`.`barcode`, `photo`.`asset_id`, `photo`.`original_filename`, `photo`.`url` FROM `product` INNER JOIN `photo` ON `product`.`id_group` = `photo`.`id_group` INNER JOIN `group_photo` ON `product`.`id_group` = `group_photo`.`id_group`".$where." $limit";
+$query = 'SELECT `product`.`id_product`, `product`.`id_group`, `group_photo`.`id_collection`, `group_photo`.`id_model`, `product`.`id_category`, `photo`.`id_photo`, `product`.`name`, `product`.`barcode`, `photo`.`asset_id`, `photo`.`original_filename`, `photo`.`url` FROM `product` INNER JOIN `photo` ON `product`.`id_group` = `photo`.`id_group` INNER JOIN `group_photo` ON `product`.`id_group` = `group_photo`.`id_group`'.$where.' LIMIT '.$limit.',24';
 $result = mysqli_query($connection,$query);
 $rows = mysqli_num_rows($result);
 if ($rows > 0) {

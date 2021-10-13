@@ -6,7 +6,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
 	<meta name="generator" content="Hugo 0.84.0">
-	<title>Demetria Album</title>
+	<title>Album</title>
 	<link href="css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css"/>
 	<style>
@@ -28,6 +28,7 @@
 						<li><a href="add-model.html" class="text-white">Agregar modelo</a></li>
                         <li><a href="add-category.html" class="text-white">Agregar categoría</a></li>
 						<li><a href="add-group.html" class="text-white">Agregar grupo de fotos</a></li>
+                        <li><a href="group.html" class="text-white">Administrar grupos</a></li>
 					</ul>
 				</div>
 			</div>
@@ -57,16 +58,19 @@
                         <div class="col-md-4 col-6 mb-3">
                             <label for="collection">Colección</label>
                             <select class="form-select" name="collection" id="collection">
+                                <option value="">Todas</option>
                             </select>
                         </div>
                         <div class="col-md-4 col-6 mb-3">
                             <label for="model">Modelo</label>
                             <select class="form-select" name="model" id="model">
+                                <option value="">Todas</option>
                             </select>
                         </div>
                         <div class="col-md-4 col-12 mb-3">
                             <label for="category">Categoría</label>
                             <select class="form-select" name="category" id="category">
+                                <option value="">Todas</option>
                             </select>
                         </div>
                         <div class="input-group mb-3">
@@ -90,6 +94,9 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="col-12" id="pages-search">
+
+                </div>
             </div>
 		</div>
 	</div>
@@ -111,6 +118,7 @@
 <script src="js/photos.js"></script>
 <script>
     load_index();
+    search_group_table(0);
 </script>
 </body>
 </html>

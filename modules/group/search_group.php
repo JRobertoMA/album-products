@@ -55,7 +55,7 @@ for ($i=0; $i < 4; $i++) {
         }
     }
 }
-$where .= " GROUP BY `group_photo`.`id_group` ORDER BY `group_photo`.`id_group` DESC";
+$where .= " AND `photo`.`order_priority` = 1 GROUP BY `group_photo`.`id_group` ORDER BY `group_photo`.`id_group` DESC";
 $query = "SELECT `product`.`id_product`, `product`.`id_group`, `group_photo`.`id_collection`, `group_photo`.`id_model`, `product`.`id_category`, `photo`.`id_photo`, `product`.`name`, `product`.`barcode`, `photo`.`asset_id`, `photo`.`original_filename`, `photo`.`url` FROM `product` INNER JOIN `photo` ON `product`.`id_group` = `photo`.`id_group` INNER JOIN `group_photo` ON `product`.`id_group` = `group_photo`.`id_group`".$where.$limit;
 $response['query'][] = $query;
 $result = mysqli_query($connection, $query);

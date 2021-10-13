@@ -13,7 +13,7 @@ $query = "SELECT `collection`.`name` AS 'collection', `model`.`name` AS 'model' 
 $row = mysqli_fetch_assoc(mysqli_query($connection, $query));
 $response["collection"] = $row["collection"];
 $response["model"] = $row["model"];
-$query = "SELECT * FROM `photo` WHERE `id_group` = $id_group";
+$query = "SELECT * FROM `photo` WHERE `id_group` = $id_group ORDER BY order_priority ASC";
 $result = mysqli_query($connection, $query);
 while ($row = mysqli_fetch_assoc($result)) {
     $response["photo"][] = array("original_filename" => $row["original_filename"], "url" => $row["url"]);
@@ -21,7 +21,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 $query = "SELECT * FROM `product` WHERE `id_group` = $id_group";
 $result = mysqli_query($connection, $query);
 while ($row = mysqli_fetch_assoc($result)) {
-    $response["product"][] = array("id_product" => $row["id_product"], "name" => $row["name"], "barcode" => $row["barcode"]);
+    $response["product"][] = array("id_product" => $row["id_product"], "name" => $row["name"], "barcode" => $row["barcode"], "id_category" => $row['id_category']);
 }
 $query = "SELECT `note`.`id_note`, `note`.`note`, `note`.`date_add`, `product`.`name`, `barcode` FROM `note` INNER JOIN `product` ON `note`.`id_product` = `product`.`id_product` WHERE `note`.`id_group` = $id_group";
 $result = mysqli_query($connection, $query);
