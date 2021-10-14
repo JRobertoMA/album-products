@@ -503,7 +503,12 @@ function checkSession() {
 
 var pag_product = 1;
 function search_group_table(change_page) {
-    pag_product += change_page;
+    if (change_page == 0) {
+        pag_product = 1;
+    } else {
+        pag_product += change_page;
+    }
+    
     var formElement = document.getElementById("form-search");
     var formdata = new FormData(formElement);
     formdata.append("jwt", localStorage.getItem("jwt"));
