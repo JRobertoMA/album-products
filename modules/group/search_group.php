@@ -57,12 +57,11 @@ for ($i=0; $i < 4; $i++) {
 }
 $where .= " AND `photo`.`order_priority` = 1 GROUP BY `group_photo`.`id_group` ORDER BY `group_photo`.`id_group` DESC";
 $query = "SELECT `product`.`id_product`, `product`.`id_group`, `group_photo`.`id_collection`, `group_photo`.`id_model`, `product`.`id_category`, `photo`.`id_photo`, `product`.`name`, `product`.`barcode`, `photo`.`asset_id`, `photo`.`original_filename`, `photo`.`url` FROM `product` INNER JOIN `photo` ON `product`.`id_group` = `photo`.`id_group` INNER JOIN `group_photo` ON `product`.`id_group` = `group_photo`.`id_group`".$where.$limit;
-$response['query'][] = $query;
 $result = mysqli_query($connection, $query);
 $response['results'] = array();
 while ($row = mysqli_fetch_assoc($result)) {
     if (!isset($response["results"][$row["id_group"]])) {
-        $response["results"][$row["id_group"]] = array("id_group" => $row["id_group"], "url" => $row["url"]);
+        $response["results"][$row["id_group"]] = array("id_group" => $row["id_group"], "url" => $row["url"], 'name' => $row['name'], 'barcode' => $row['barcode']);
     }
 }
 if ($limit_val > 24) {
@@ -74,7 +73,6 @@ if ($limit_val > 24) {
 $response["after_count"] = intval($limit_val/24) + 1;
 $limit = "LIMIT $limit_val,24";
 $query = "SELECT `product`.`id_product`, `product`.`id_group`, `group_photo`.`id_collection`, `group_photo`.`id_model`, `product`.`id_category`, `photo`.`id_photo`, `product`.`name`, `product`.`barcode`, `photo`.`asset_id`, `photo`.`original_filename`, `photo`.`url` FROM `product` INNER JOIN `photo` ON `product`.`id_group` = `photo`.`id_group` INNER JOIN `group_photo` ON `product`.`id_group` = `group_photo`.`id_group`".$where." $limit";
-$response['query'][] = $query;
 $result = mysqli_query($connection,$query);
 $rows = mysqli_num_rows($result);
 if ($rows > 0) {

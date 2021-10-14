@@ -251,7 +251,6 @@ function index() {
                 var html = "";
                 var name_product = "";
                 var barcode_product = "";
-                //console.log(response.data.results);
                 var results = response.data.results;
                 const keysSorted = Object.keys(results).sort(function(a,b){return b-a});
                 for (let key = 0; key < keysSorted.length; key++) {
@@ -260,7 +259,10 @@ function index() {
 					<div class="card shadow-sm">
 						<img src="${results[keysSorted[key]].url}" alt="" class="card-img-top img-fluid" onclick="view(${results[keysSorted[key]].id_group});">
 						<div class="card-body">
-							<p class="card-text text-center" style="font-size: .875rem;"><a href="view.html?group=${results[keysSorted[key]].id_group}" target="_blank">Abrir en nueva pestaña</a></p>
+							<p class="card-text text-center" style="font-size: .875rem;text-transform: capitalize;">
+                                ${results[keysSorted[key]].name} <a href="view.html?group=${results[keysSorted[key]].id_group}" target="_blank"><i class="fas fa-external-link-alt"></i></a></br>
+                                <strong>${results[keysSorted[key]].barcode}</strong>
+                            </p>
 							<div class="d-flex justify-content-between align-items-center"></div>
 						</div>
 					</div>
@@ -339,8 +341,6 @@ function search() {
         switch (response.data.status) {
             case "ok":
                 var html = "";
-                var name_product = "";
-                var barcode_product = "";
                 var results = response.data.results;
                 const keysSorted = Object.keys(results).sort(function(a,b){return b-a});
                 for (let key = 0; key < keysSorted.length; key++) {
@@ -349,7 +349,10 @@ function search() {
 					<div class="card shadow-sm">
 						<img src="${results[keysSorted[key]].url}" alt="" class="card-img-top img-fluid" onclick="view(${results[keysSorted[key]].id_group});">
 						<div class="card-body">
-							<p class="card-text text-center" style="font-size: .875rem;"><a href="view.html?group=${results[keysSorted[key]].id_group}" target="_blank">Abrir en nueva pestaña</a></p>
+							<p class="card-text text-center" style="font-size: .875rem;text-transform: capitalize;">
+                            ${results[keysSorted[key]].name} <a href="view.html?group=${results[keysSorted[key]].id_group}" target="_blank"><i class="fas fa-external-link-alt"></i></a></br>
+                            <strong>${results[keysSorted[key]].barcode}</strong>
+                            </p>
 							<div class="d-flex justify-content-between align-items-center"></div>
 						</div>
 					</div>
