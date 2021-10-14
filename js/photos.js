@@ -501,7 +501,7 @@ function checkSession() {
     }
 }
 
-pag_product = 1;
+var pag_product = 1;
 function search_group_table(change_page) {
     pag_product += change_page;
     var formElement = document.getElementById("form-search");
