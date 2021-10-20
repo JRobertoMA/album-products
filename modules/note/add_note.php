@@ -12,7 +12,7 @@ $note = $_POST["note"];
 $id_group = $_POST["group"];
 $jwt = $_POST["jwt"];
 $jwt = $webToken->decode($jwt);
-$query = "INSERT INTO `note` (`id_note`, `id_user`, `id_group`, `id_product`, `note`, `date_add`) VALUES (NULL, '$jwt->id_user', '$id_group', '$product', '$note', '$dateTime')";
+$query = "INSERT INTO `note` (`id_note`, `id_user`, `id_group`, `id_product`, `note`, `read`, `date_add`) VALUES (NULL, '$jwt->id_user', '$id_group', '$product', '$note', '0', '$dateTime')";
 if (mysqli_query($connection, $query)) {
     $id_note = mysqli_insert_id($connection);
     $response["status"] = "ok";

@@ -690,3 +690,65 @@ function change_image_order() {
         console.log(error);
     });
 }
+
+function search_note(change_page) {
+    if (change_page == 0) {
+        pag_product = 1;
+    } else {
+        pag_product += change_page;
+    }
+    var formdata = new FormData();
+    formdata.append("jwt", localStorage.getItem("jwt"));
+    formdata.append("pag", pag_product);
+    axios.post("modules/note/search_note.php", formdata, {headers: { "Content-Type": "multipart/form-data" },}).then((response) => {
+        switch (response.data.status) {
+            case "ok":
+                var html = "";
+                var results = response.data.results;
+                const keysSorted = Object.keys(results).sort(function(a,b){return b-a});
+                for (let key = 0; key < keysSorted.length; key++) {
+                    html += `
+                    <tr>
+                        <th scope="row">
+                        <button class="btn btn-primary" type="button" onclick="read_note(${results[keysSorted[key]].id_note},${results[keysSorted[key]].id_group});"><i class="fas fa-eye"></i></button>
+                        </th>
+                        <td>${results[keysSorted[key]].name}</td>
+                        <td>${results[keysSorted[key]].barcode}</td>
+                        <td>${results[keysSorted[key]].note}</td>
+                        <td>${results[keysSorted[key]].date_add}</td>
+                    </tr>`;
+
+                }
+                $("#results-search").html(html);
+                console.log(html);
+                var before = "";
+                var after = "";
+                if (response.data.before == "off") {
+                    before = `<li class="page-item disabled"><button class="page-link" tabindex="-1" aria-disabled="true">Anterior</button></li>`;
+                } else {
+                    before = `<li class="page-item"><button class="page-link" onclick="search_group_table(-1);">Anterior</button></li>`;
+                }
+                if (response.data.after == "off") {
+                    after = `<li class="page-item disabled"><button class="page-link" tabindex="-1" aria-disabled="true">Siguiente</button></li>`;
+                } else {
+                    after = `<li class="page-item"><button class="page-link" onclick="search_group_table(1);" aria-disabled="true">Siguiente</button></li>`;
+                }
+                html = `
+                <div class="col-12">
+                <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    ${before}
+                    ${after}
+                </ul>
+                </nav>
+               </div> `;
+               $("#pages-search").html(html);
+                break;
+            case "error":
+                alert(response.data.answer);
+                break;
+        }
+    },(error) => {
+        console.log(error);
+    });
+}
