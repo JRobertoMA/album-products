@@ -691,18 +691,31 @@ function change_image_order() {
     });
 }
 
-function search_note(change_page) {
-    if (change_page == 0) {
-        pag_product = 1;
-    } else {
-        pag_product += change_page;
-    }
+function new_notes() {
     var formdata = new FormData();
     formdata.append("jwt", localStorage.getItem("jwt"));
-    formdata.append("pag", pag_product);
     axios.post("modules/note/search_note.php", formdata, {headers: { "Content-Type": "multipart/form-data" },}).then((response) => {
         switch (response.data.status) {
             case "ok":
+                var count = response.data.results.length;
+                $('#new_notes').text(count);
+                break;
+            case "error":
+                break;
+        }
+    },(error) => {
+        console.log(error);
+    });
+}
+
+function search_note() {
+    var formdata = new FormData();
+    formdata.append("jwt", localStorage.getItem("jwt"));
+    axios.post("modules/note/search_note.php", formdata, {headers: { "Content-Type": "multipart/form-data" },}).then((response) => {
+        switch (response.data.status) {
+            case "ok":
+                var count = response.data.results.length;
+                $('#new_notes').text(count);
                 var html = "";
                 var results = response.data.results;
                 const keysSorted = Object.keys(results).sort(function(a,b){return b-a});
