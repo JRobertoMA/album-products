@@ -1,7 +1,7 @@
 <?php
 class DATABASE {
     public function conexion() {
-        $conexion = mysqli_connect('localhost', 'root', 'TenzaZangetsu$16', 'photos');
+        $conexion = mysqli_connect('localhost', 'root', '', 'photos');
         if (mysqli_connect_errno($conexion)) {
             return mysqli_connect_error();
         } else {
