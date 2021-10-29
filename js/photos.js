@@ -723,8 +723,13 @@ function search_note() {
                     html += `
                     <tr>
                         <th scope="row">
-                        <button class="btn btn-primary" type="button" onclick="read_note(${results[keysSorted[key]].id_note},${results[keysSorted[key]].id_group});"><i class="fas fa-eye"></i></button>
+                        <a data-fancybox="gallery" data-src="${results[keysSorted[key]].url}" data-caption="${results[keysSorted[key]].original_filename}">
+                            <img src="${results[keysSorted[key]].url}" class="card-img-top img-thumbnail rounded img-fluid" style="max-width: 64px;">
+                        </a>
                         </th>
+                        <td>
+                        <button class="btn btn-primary" type="button" onclick="open_note(${results[keysSorted[key]].id_note},${results[keysSorted[key]].id_group});"><i class="fas fa-eye"></i></button>
+                        </td>
                         <td>${results[keysSorted[key]].name}</td>
                         <td>${results[keysSorted[key]].barcode}</td>
                         <td>${results[keysSorted[key]].note}</td>
@@ -756,6 +761,24 @@ function search_note() {
                 </nav>
                </div> `;
                $("#pages-search").html(html);
+                break;
+            case "error":
+                alert(response.data.answer);
+                break;
+        }
+    },(error) => {
+        console.log(error);
+    });
+}
+
+function open_note(id_note, id_group) {
+    var formdata = new FormData();
+    formdata.append("jwt", localStorage.getItem("jwt"));
+    formdata.append("id_note", id_note);
+    axios.post("modules/note/open_note.php", formdata, {headers: { "Content-Type": "multipart/form-data" },}).then((response) => {
+        switch (response.data.status) {
+            case "ok":
+                view(id_group);
                 break;
             case "error":
                 alert(response.data.answer);
