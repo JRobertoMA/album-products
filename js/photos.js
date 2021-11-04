@@ -17,9 +17,10 @@ function add_category() {
         switch (response.data.status) {
             case "ok":
                 document.getElementById("form-category").reset();
+                toastr.success("Categoría creada correctamente");
                 break;
             case "error":
-                alert(response.data.answer);
+                toastr.error(response.data.answer);
                 break;
         }
     },(error) => {
@@ -35,9 +36,10 @@ function add_collection() {
         switch (response.data.status) {
             case "ok":
                 document.getElementById("form-collection").reset();
+                toastr.success("Colección creada correctamente");
                 break;
             case "error":
-                alert(response.data.answer);
+                toastr.error(response.data.answer);
                 break;
         }
     },(error) => {
@@ -53,9 +55,10 @@ function add_model() {
         switch (response.data.status) {
             case "ok":
                 document.getElementById("form-model").reset();
+                toastr.success("Modelo creada correctamente");
                 break;
             case "error":
-                alert(response.data.answer);
+                toastr.error(response.data.answer);
                 break;
         }
     },(error) => {
@@ -76,9 +79,10 @@ function add_group() {
                 $("#btn-save-group").attr("onclick", "update_group();");
                 $("#upload_widget_opener").prop("disabled", false);
                 $(`#id_group`).val(response.data.id_group);
+                toastr.success("Grupo creado correctamente");
                 break;
             case "error":
-                alert(response.data.answer);
+                toastr.error(response.data.answer);
                 break;
         }
     },(error) => {
@@ -96,9 +100,10 @@ function update_group() {
                 for (const key in response.data.products) {
                     $(`#id-product-${response.data.products[key].id_product_form}`).val(response.data.products[key].id_product);
                 }
+                toastr.success("Grupo actualizado correctamente");
                 break;
             case "error":
-                alert(response.data.answer);
+                toastr.error(response.data.answer);
                 break;
         }
     },(error) => {
@@ -664,7 +669,6 @@ function load_edit() {
     });
 }
 
-
 function change_image_order() {
     var photos = document.getElementById('photos').childNodes;
     var photos_id = '';
@@ -681,9 +685,10 @@ function change_image_order() {
     axios.post("modules/photo/change_image_order.php", formdata, {headers: { "Content-Type": "multipart/form-data" },}).then((response) => {
         switch (response.data.status) {
             case "ok":
+                toastr.success(response.data.answer);
                 break;
             case "error":
-                alert(response.data.answer);
+                toastr.error(response.data.answer);
                 break;
         }
     },(error) => {
